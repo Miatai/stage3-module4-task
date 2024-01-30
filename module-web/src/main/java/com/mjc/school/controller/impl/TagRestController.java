@@ -15,11 +15,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1.0/tags")
-public class TagControllerImpl implements TagController {
+public class TagRestController implements TagController {
     private final TagService tagService;
 
     @Autowired
-    public TagControllerImpl(final TagService tagService) {
+    public TagRestController(final TagService tagService) {
         this.tagService = tagService;
     }
 

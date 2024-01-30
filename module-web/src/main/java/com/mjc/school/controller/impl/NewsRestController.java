@@ -1,9 +1,10 @@
 package com.mjc.school.controller.impl;
 
-import com.mjc.school.controller.AuthorController;
-import com.mjc.school.service.AuthorService;
-import com.mjc.school.service.dto.AuthorDtoRequest;
-import com.mjc.school.service.dto.AuthorDtoResponse;
+import com.mjc.school.controller.NewsController;
+import com.mjc.school.service.NewsService;
+import com.mjc.school.service.dto.NewsDtoRequest;
+import com.mjc.school.service.dto.NewsDtoResponse;
+import com.mjc.school.service.query.NewsQueryParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,67 +15,67 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1.0/authors")
-public class AuthorControllerImpl implements AuthorController {
-    private final AuthorService authorService;
+@RequestMapping(value = "/api/v1.0/news")
+public class NewsRestController implements NewsController {
+    private final NewsService newsService;
 
     @Autowired
-    public AuthorControllerImpl(final AuthorService authorService) {
-        this.authorService = authorService;
+    public NewsRestController(NewsService newsService) {
+        this.newsService = newsService;
     }
 
     @Override
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<AuthorDtoResponse> readAll(
+    public List<NewsDtoResponse> readAll(
             @RequestParam(value = "offset", defaultValue = "0") Integer offset,
             @RequestParam(value = "limit", defaultValue = "10") Integer limit,
             @RequestParam(value = "sort-field", defaultValue = "id", required = false) String sortField,
-            @RequestParam(value = "sort-type", defaultValue = "ASC", required = false) String sortType
+            @RequestParam(value = "sortType", defaultValue = "ASC", required = false) String sortType
     ) {
         Pageable pageable = PageRequest.of(offset, limit, Sort.by(Sort.Direction.fromString(sortType), sortField));
-        return authorService.readAll(pageable);
+        return newsService.readAll(pageable);
     }
 
     @Override
     @GetMapping(value = "/{id:\\d+}")
     @ResponseStatus(HttpStatus.OK)
-    public AuthorDtoResponse readById(@PathVariable Long id) {
-        return authorService.readById(id);
+    public NewsDtoResponse readById(@PathVariable Long id) {
+        return newsService.readById(id);
     }
 
     @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthorDtoResponse create(@RequestBody AuthorDtoRequest dtoRequest) {
-        return authorService.create(dtoRequest);
+    public NewsDtoResponse create(@RequestBody NewsDtoRequest dtoRequest) {
+        return newsService.create(dtoRequest);
     }
 
     @Override
     @PutMapping(value = "/{id:\\d+}")
     @ResponseStatus(HttpStatus.OK)
-    public AuthorDtoResponse update(@PathVariable Long id,  @RequestBody AuthorDtoRequest dtoRequest) {
-        return authorService.update(dtoRequest);
+    public NewsDtoResponse update(@PathVariable Long id,  @RequestBody NewsDtoRequest dtoRequest) {
+        return newsService.update(dtoRequest);
     }
 
     @Override
     @PatchMapping(value = "/{id:\\d+}")
     @ResponseStatus(HttpStatus.OK)
-    public AuthorDtoResponse patch(@PathVariable Long id,  @RequestBody AuthorDtoRequest dtoRequest) {
-        return authorService.patch(dtoRequest);
+    public NewsDtoResponse patch(@PathVariable Long id,  @RequestBody NewsDtoRequest dtoRequest) {
+        return newsService.patch(dtoRequest);
     }
 
     @Override
     @DeleteMapping(value = "/{id:\\d+}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
-        authorService.deleteById(id);
+        newsService.deleteById(id);
     }
 
     @Override
-    @GetMapping(value = "/news/{newsId:\\d+}")
+    @GetMapping(value = "/params")
     @ResponseStatus(HttpStatus.OK)
-    public AuthorDtoResponse readByNewsId(@PathVariable Long newsId) {
-        return authorService.readByNewsId(newsId);
+    public List<NewsDtoResponse> readByQueryParams(NewsQueryParams queryParams) {
+        return newsService.readByQueryParams(queryParams);
     }
 }
