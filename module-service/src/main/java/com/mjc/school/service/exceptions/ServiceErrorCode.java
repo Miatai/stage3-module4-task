@@ -2,11 +2,10 @@ package com.mjc.school.service.exceptions;
 
 public enum ServiceErrorCode {
     NEWS_ID_DOES_NOT_EXIST(Constants.ERROR_000001, "News with id %d does not exist."),
-    AUTHOR_ID_DOES_NOT_EXIST(Constants.ERROR_000002, "Author Id does not exist. Author Id is: %s"),
-    TAG_ID_DOES_NOT_EXIST(Constants.ERROR_000003, "Tag with Id does not exist."),
-    NEWS_WITH_SUCH_PARAMS_NOT_EXIST(Constants.ERROR_000004, "News with such params does not exist."),
-    AUTHOR_DOES_NOT_EXIST_FOR_NEWS_ID(Constants.ERROR_000004, "Author not found for news with id %d."),
-    COMMENT_ID_DOES_NOT_EXIST(Constants.ERROR_000005, "Comment with id %d does not exist."),
+    AUTHOR_ID_DOES_NOT_EXIST(Constants.ERROR_000002, "Author with id %d does not exist."),
+    TAG_ID_DOES_NOT_EXIST(Constants.ERROR_000003, "Tag with id %d does not exist."),
+    COMMENT_ID_DOES_NOT_EXIST(Constants.ERROR_000004, "Comment with id %d does not exist."),
+    AUTHOR_DOES_NOT_EXIST_FOR_NEWS_ID(Constants.ERROR_000005, "Author not found for news with id %d."),
     VALIDATION(Constants.ERROR_000013, "Validation failed: %s");
 
     private final String errorMessage;

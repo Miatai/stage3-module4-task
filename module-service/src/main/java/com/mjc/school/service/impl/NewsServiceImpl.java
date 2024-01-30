@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,8 +42,8 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<NewsDtoResponse> readAll() {
-        return mapper.modelListToDtoList(newsRepository.readAll());
+    public List<NewsDtoResponse> readAll(Pageable pageable) {
+        return mapper.modelListToDtoList(newsRepository.readAll(pageable));
     }
 
     @Override
@@ -89,6 +90,24 @@ public class NewsServiceImpl implements NewsService {
             throw new NotFoundException(
                     String.format(AUTHOR_ID_DOES_NOT_EXIST.getMessage(), updateRequest.authorId()));
         }
+    }
+
+    @Override
+    @Transactional
+    public NewsDtoResponse patch(NewsDtoRequest patchRequest) {
+        News model = newsRepository.readById(patchRequest.id()).orElseThrow(
+                () -> new NotFoundException(String.format(NEWS_ID_DOES_NOT_EXIST.getMessage(), patchRequest.id()))
+        );
+        if(patchRequest.title() != null){
+            model.setTitle(patchRequest.title());
+        }
+        if(patchRequest.content() != null){
+            model.setContent(patchRequest.content());
+        }
+        if(patchRequest.authorId() != null){
+            model.setAuthor(authorRepository.getReference(patchRequest.authorId()));
+        }
+        return mapper.modelToDto(model);
     }
 
     @Override

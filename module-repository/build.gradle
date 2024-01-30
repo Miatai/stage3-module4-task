@@ -1,6 +1,5 @@
 plugins {
     id 'java-library'
-    id 'org.flywaydb.flyway'
     id 'org.springframework.boot'
     id 'io.spring.dependency-management'
 }
@@ -18,11 +17,4 @@ bootJar {
 
 jar {
     enabled = true
-}
-
-flyway {
-    url = "jdbc:h2:tcp://localhost/./news_management"
-    user = 'sa'
-    password = 'password'
-    baselineOnMigrate = true
 }

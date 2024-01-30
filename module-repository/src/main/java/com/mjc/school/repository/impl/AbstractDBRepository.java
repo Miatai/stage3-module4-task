@@ -2,6 +2,8 @@ package com.mjc.school.repository.impl;
 
 import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.model.BaseEntity;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -9,6 +11,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.metamodel.EntityType;
 import java.lang.reflect.ParameterizedType;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,9 +33,15 @@ public abstract class AbstractDBRepository<T extends BaseEntity<K>, K> implement
     }
 
     @Override
-    public List<T> readAll() {
-        TypedQuery<T> query = entityManager.createQuery("SELECT e FROM "
-            + entityClass.getSimpleName() + " e", entityClass);
+    public List<T> readAll(Pageable pageable) {
+        StringBuilder queue = new StringBuilder("SELECT e FROM "
+                + entityClass.getSimpleName() + " e");
+        for (Sort.Order order : pageable.getSort()) {
+            queue.append(" ORDER BY e." + order.getProperty().toString() + " " + order.getDirection().toString());
+        }
+        TypedQuery<T> query = entityManager.createQuery(queue.toString(), entityClass);
+        query.setMaxResults(pageable.getPageSize());
+        query.setFirstResult(pageable.getPageSize()* (pageable.getPageNumber() - 1));
         return query.getResultList();
     }
 

@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,8 +37,8 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AuthorDtoResponse> readAll() {
-        return mapper.modelListToDtoList(authorRepository.readAll());
+    public List<AuthorDtoResponse> readAll(Pageable pageable) {
+        return mapper.modelListToDtoList(authorRepository.readAll(pageable));
     }
 
     @Override
@@ -75,6 +76,19 @@ public class AuthorServiceImpl implements AuthorService {
                     String.format(AUTHOR_ID_DOES_NOT_EXIST.getMessage(), updateRequest.id()));
         }
     }
+
+    @Override
+    @Transactional
+    public AuthorDtoResponse patch(AuthorDtoRequest patchRequest) {
+        Author model = authorRepository.readById(patchRequest.id()).orElseThrow(
+                () -> new NotFoundException(String.format(AUTHOR_ID_DOES_NOT_EXIST.getMessage(), patchRequest.id()))
+        );
+        if(patchRequest.name() != null){
+            model.setName(patchRequest.name());
+        }
+        return mapper.modelToDto(model);
+    }
+
 
     @Override
     @Transactional
